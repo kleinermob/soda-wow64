@@ -33,8 +33,10 @@ jobs:
 
       - name: get/set the soda recipe
         working-directory: /home/runner/.config/frogminer/
-        run: curl https://raw.githubusercontent.com/bottlesdevs/build-tools/main/runners/vaniglia/wine-tkg-valve.cfg > wine-tkg.cfg
-      
+        run: |
+          curl https://raw.githubusercontent.com/bottlesdevs/build-tools/main/runners/vaniglia/wine-tkg-valve.cfg > wine-tkg.cfg
+          sed -i '/^_NOLIB32=/!s/$/\n_NOLIB32="wow64"/' wine-tkg.cfg
+          
       - name: start build
         working-directory: /home/runner/work/wine-tkg-git/wine-tkg-git/
         run: yes|./non-makepkg-build.sh
@@ -42,9 +44,9 @@ jobs:
       - name: package
         working-directory: /home/runner/work/wine-tkg-git/wine-tkg-git/non-makepkg-builds/
         run: |
-          mv wine-tkg-* soda-$WINE_VERSION-$REVISION-x86_64
-          tar cJvf soda-$WINE_VERSION-$REVISION-x86_64.tar.xz soda-$WINE_VERSION-$REVISION-x86_64
-          mv soda-$WINE_VERSION-$REVISION-x86_64.tar.xz /tmp/soda-$WINE_VERSION-$REVISION-x86_64.tar.xz
+          mv wine-tkg-* soda-wow64-$WINE_VERSION-$REVISION-x86_64
+          tar cJvf soda-wow64-$WINE_VERSION-$REVISION-x86_64.tar.xz soda-wow64-$WINE_VERSION-$REVISION-x86_64
+          mv soda-wow64-$WINE_VERSION-$REVISION-x86_64.tar.xz /tmp/soda-wow64-$WINE_VERSION-$REVISION-x86_64.tar.xz
 
       - name: release
         uses: "marvinpinto/action-automatic-releases@latest"
